@@ -45,13 +45,14 @@ uso, reclamações e dúvidas recorrentes — onde o chatbot mais reduz tempo de
 | Tecnologia | Uso | Justificativa |
 |---|---|---|
 | **Python** | Backend do chatbot | Linguagem simples, muito usada em IA, boa integração com APIs. |
-| **OpenAI API** | Interpretação e geração das respostas | Boa interpretação de texto e respostas claras adaptadas ao contexto operacional. |
+| **Google Gemini API** | Interpretação e geração das respostas | Possui **nível gratuito** (sem cartão de crédito), boa interpretação de texto, suporte a histórico e a function calling. |
 | **Streamlit** | Interface de interação | Permite uma UI simples e demonstrável para os testes. |
 | **GitHub** | Versionamento e entrega | Documentação e histórico do projeto. |
 
-> A Sprint 1 também citou LangChain como evolução futura (para RAG/integrações). A Sprint 2
-> foi implementada diretamente com a SDK oficial da OpenAI para manter o código enxuto e
-> transparente; a estrutura modular permite migrar para LangChain depois sem retrabalho.
+> A Sprint 1 listou OpenAI/LangChain entre as opções; na Sprint 2 optamos pela **API do
+> Gemini** por oferecer um nível gratuito real (sem cartão), mantendo o escopo do desafio
+> (que permite "Llama, OpenAI, Gemini ou outra"). A estrutura modular permite trocar de
+> provedor depois sem retrabalho.
 
 ---
 
@@ -94,6 +95,18 @@ goodwe-chargeops-chatbot/
 
 ---
 
+## Como obter a chave GRATUITA do Gemini
+
+1. Acesse **https://aistudio.google.com/apikey** e entre com uma conta Google.
+2. Clique em **"Create API key"** (não é preciso cartão de crédito).
+3. Copie a chave gerada — você vai colá-la no `.env` (passo abaixo).
+
+> Nível gratuito: ~1.500 requisições/dia e 15/minuto no Gemini 2.5 Flash — suficiente
+> para o projeto. Observação: no nível gratuito, os prompts podem ser usados pelo Google
+> para melhorar seus produtos (aceitável para um projeto acadêmico).
+
+---
+
 ## Como executar (local)
 
 1. **Clone o repositório** e entre na pasta:
@@ -111,35 +124,41 @@ goodwe-chargeops-chatbot/
 
 3. **Configure a chave da API** (via variável de ambiente — nunca no código):
    ```bash
-   cp .env.example .env
-   # edite o .env e preencha OPENAI_API_KEY
+   cp .env.example .env          # Windows: copy .env.example .env
+   # edite o .env e preencha GEMINI_API_KEY
    ```
 
 4. **Rode a interface desejada:**
    ```bash
-   # Terminal:
-   python -m src.cli
-
    # Web (recomendado para o vídeo):
    streamlit run src/app.py
+
+   # Terminal:
+   python -m src.cli
    ```
 
 ### Variáveis de ambiente
 
 | Variável | Obrigatória | Padrão | Descrição |
 |---|---|---|---|
-| `OPENAI_API_KEY` | Sim | — | Chave da API da OpenAI. |
-| `OPENAI_MODEL` | Não | `gpt-4o-mini` | Modelo usado. |
-| `OPENAI_TEMPERATURE` | Não | `0.3` | Criatividade das respostas. |
+| `GEMINI_API_KEY` | Sim | — | Chave gratuita da API do Gemini. |
+| `GEMINI_MODEL` | Não | `gemini-2.5-flash` | Modelo usado. |
+| `GEMINI_TEMPERATURE` | Não | `0.3` | Criatividade das respostas. |
 
 ### Execução no Google Colab
 
 No Colab, **não use `.env`**. Guarde a chave em **Secrets** e exporte antes de rodar:
 ```python
+!pip install -r requirements.txt
 from google.colab import userdata
 import os
-os.environ["OPENAI_API_KEY"] = userdata.get("OPENAI_API_KEY")
+os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")
+
+from src.chatbot import ChargeOpsChatbot
+bot = ChargeOpsChatbot()
+print(bot.enviar("Como organizo o uso do carregador entre os moradores?"))
 ```
+> O Streamlit não roda bem dentro do Colab; lá, use a CLI ou chame a classe direto.
 
 ---
 
