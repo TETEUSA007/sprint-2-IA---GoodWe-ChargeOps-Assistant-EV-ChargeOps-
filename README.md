@@ -45,14 +45,13 @@ uso, reclamações e dúvidas recorrentes — onde o chatbot mais reduz tempo de
 | Tecnologia | Uso | Justificativa |
 |---|---|---|
 | **Python** | Backend do chatbot | Linguagem simples, muito usada em IA, boa integração com APIs. |
-| **Google Gemini API** | Interpretação e geração das respostas | Possui **nível gratuito** (sem cartão de crédito), boa interpretação de texto, suporte a histórico e a function calling. |
+| **Groq + Llama 3.3 70B** | Interpretação e geração das respostas | Nível **gratuito sem cartão de crédito**, inferência muito rápida e suporte a function calling. O modelo **Llama** já era uma das opções previstas na Sprint 1. |
 | **Streamlit** | Interface de interação | Permite uma UI simples e demonstrável para os testes. |
 | **GitHub** | Versionamento e entrega | Documentação e histórico do projeto. |
 
-> A Sprint 1 listou OpenAI/LangChain entre as opções; na Sprint 2 optamos pela **API do
-> Gemini** por oferecer um nível gratuito real (sem cartão), mantendo o escopo do desafio
-> (que permite "Llama, OpenAI, Gemini ou outra"). A estrutura modular permite trocar de
-> provedor depois sem retrabalho.
+> A Sprint 1 permitia "Llama, OpenAI, Gemini ou outra". Optamos por executar o **Llama 3.3
+> via Groq** por ser totalmente gratuito (sem cartão e sem exigência de verificação de
+> idade) e compatível com o padrão de API da OpenAI, mantendo o código simples e portátil.
 
 ---
 
@@ -95,15 +94,14 @@ goodwe-chargeops-chatbot/
 
 ---
 
-## Como obter a chave GRATUITA do Gemini
+## Como obter a chave GRATUITA do Groq
 
-1. Acesse **https://aistudio.google.com/apikey** e entre com uma conta Google.
-2. Clique em **"Create API key"** (não é preciso cartão de crédito).
-3. Copie a chave gerada — você vai colá-la no `.env` (passo abaixo).
+1. Acesse **https://console.groq.com/keys** e crie a conta (e-mail, Google ou GitHub).
+2. Não é preciso cartão de crédito nem verificação de idade.
+3. Clique em **"Create API Key"**, copie a chave (começa com `gsk_...`) e cole no `.env`.
 
-> Nível gratuito: ~1.500 requisições/dia e 15/minuto no Gemini 2.5 Flash — suficiente
-> para o projeto. Observação: no nível gratuito, os prompts podem ser usados pelo Google
-> para melhorar seus produtos (aceitável para um projeto acadêmico).
+> Nível gratuito: ~30 requisições/minuto e centenas de milhares de tokens/dia — suficiente
+> para o projeto.
 
 ---
 
@@ -125,7 +123,7 @@ goodwe-chargeops-chatbot/
 3. **Configure a chave da API** (via variável de ambiente — nunca no código):
    ```bash
    cp .env.example .env          # Windows: copy .env.example .env
-   # edite o .env e preencha GEMINI_API_KEY
+   # edite o .env e preencha GROQ_API_KEY
    ```
 
 4. **Rode a interface desejada:**
@@ -141,9 +139,9 @@ goodwe-chargeops-chatbot/
 
 | Variável | Obrigatória | Padrão | Descrição |
 |---|---|---|---|
-| `GEMINI_API_KEY` | Sim | — | Chave gratuita da API do Gemini. |
-| `GEMINI_MODEL` | Não | `gemini-2.5-flash` | Modelo usado. |
-| `GEMINI_TEMPERATURE` | Não | `0.3` | Criatividade das respostas. |
+| `GROQ_API_KEY` | Sim | — | Chave gratuita da API do Groq. |
+| `GROQ_MODEL` | Não | `llama-3.3-70b-versatile` | Modelo usado. |
+| `GROQ_TEMPERATURE` | Não | `0.3` | Criatividade das respostas. |
 
 ### Execução no Google Colab
 
@@ -152,7 +150,7 @@ No Colab, **não use `.env`**. Guarde a chave em **Secrets** e exporte antes de 
 !pip install -r requirements.txt
 from google.colab import userdata
 import os
-os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")
+os.environ["GROQ_API_KEY"] = userdata.get("GROQ_API_KEY")
 
 from src.chatbot import ChargeOpsChatbot
 bot = ChargeOpsChatbot()
